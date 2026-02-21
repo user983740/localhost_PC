@@ -1,7 +1,7 @@
 export interface SignupRequest {
   username: string
   password: string
-  role: 'OWNER'
+  role: 'USER' | 'OWNER'
 }
 
 export interface LoginRequest {
@@ -11,7 +11,7 @@ export interface LoginRequest {
 
 export interface AuthResponse {
   token: string
-  userId: string
+  userId: number
   role: string
 }
 
@@ -20,13 +20,5 @@ export interface CreateStoreRequest {
   address: string
   detailAddress?: string
   businessNumber?: string
-}
-
-export interface StoreApiResponse {
-  id: string
-  name: string
-  ownerId: string
-  address: string
-  detailAddress?: string
-  businessNumber?: string
+  iconEmoji?: string
 }

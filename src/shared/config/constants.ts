@@ -3,7 +3,7 @@ export const MISSION_TYPE_LABELS: Record<string, string> = {
   DWELL: '체류',
   RECEIPT: '영수증 인증',
   INVENTORY: '재고 확인',
-  STAMP: '스탬프',
+  STAMP: '반복 방문',
 } as const
 
 export const MISSION_TYPE_COLORS: Record<string, string> = {

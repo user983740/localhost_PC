@@ -1,13 +1,11 @@
 export interface Store {
-  id: string
-  ownerId: string
+  id: number
   name: string
-  category: string
   address: string
-  phone: string
-  description: string
-  businessHours: string
-  totalBudget: number
-  usedBudget: number
-  createdAt: string
+  detailAddress?: string
+  lat?: number
+  lng?: number
+  ownerId: number
+  businessNumber?: string
+  iconEmoji?: string
 }
