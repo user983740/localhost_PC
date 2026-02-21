@@ -3,7 +3,7 @@ import { TextInput, Select, NumberInput, Button, Stack, MultiSelect, FileInput, 
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { IconPhoto, IconInfoCircle } from '@tabler/icons-react'
-import { getInventoryPresignedUrl, uploadToS3 } from '@/entities/mission/api/presignedUrlApi'
+import { getInventoryPresignedUrl, getMissionImagePresignedUrl, uploadToS3 } from '@/entities/mission/api/presignedUrlApi'
 import type { Mission, MissionType, DayOfWeek, CreateMissionRequest } from '@/entities/mission/model/types'
 
 interface MissionFormProps {
@@ -55,15 +55,9 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
       if (!file) return
       setUploading(true)
       try {
-        if (!missionId) {
-          notifications.show({
-            title: '업로드 불가',
-            message: '미션을 먼저 생성한 후 이미지를 업로드할 수 있습니다.',
-            color: 'orange',
-          })
-          return
-        }
-        const { presignedUrl, imageUrl } = await getInventoryPresignedUrl(storeId, missionId, file.type)
+        const { presignedUrl, imageUrl } = missionId
+          ? await getMissionImagePresignedUrl(storeId, missionId, file.type)
+          : await getInventoryPresignedUrl(storeId, file.type)
         await uploadToS3(presignedUrl, file)
         setAnswerImageUrl(imageUrl)
         notifications.show({
@@ -81,7 +75,7 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
         setUploading(false)
       }
     },
-    [storeId],
+    [storeId, missionId],
   )
 
   const form = useForm({

@@ -1,7 +1,19 @@
 import { fetchClient } from '@/shared/lib/fetchClient'
 import type { Mission, PresignedUrlResponse } from '../model/types'
 
+/** 미션 생성 전 — missionId 불필요 */
 export async function getInventoryPresignedUrl(
+  storeId: string,
+  contentType: string,
+): Promise<PresignedUrlResponse> {
+  return fetchClient<PresignedUrlResponse>(
+    `/api/stores/${storeId}/missions/inventory/presigned-url`,
+    { method: 'POST', body: { contentType }, auth: true },
+  )
+}
+
+/** 기존 미션 수정용 — missionId 필요 */
+export async function getMissionImagePresignedUrl(
   storeId: string,
   missionId: string,
   contentType: string,
