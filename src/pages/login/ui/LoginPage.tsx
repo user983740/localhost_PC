@@ -7,7 +7,8 @@ export function LoginPage() {
     <Center mih="100vh" bg="gray.0">
       <Card shadow="md" padding="xl" radius="md" w={400} withBorder>
         <Stack align="center" mb="lg">
-          <Title order={2}>Mission Marketing</Title>
+          <img src="/logo.png" alt="localhost" width={48} height={48} />
+          <Title order={2}>localhost</Title>
           <Text c="dimmed" size="sm">매장 관리자 로그인</Text>
         </Stack>
         <LoginForm />

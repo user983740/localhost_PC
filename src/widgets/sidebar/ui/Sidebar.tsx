@@ -1,9 +1,8 @@
-import { NavLink, Stack, Text, ThemeIcon, Divider, Box } from '@mantine/core'
+import { NavLink, Stack, Text, Divider, Box, Image } from '@mantine/core'
 import {
   IconDashboard,
   IconTarget,
   IconBuildingStore,
-  IconRocket,
 } from '@tabler/icons-react'
 import { useRouter, useRouterState } from '@tanstack/react-router'
 
@@ -20,10 +19,8 @@ export function Sidebar() {
   return (
     <Box p="md">
       <Stack gap={4} mb="md" align="center">
-        <ThemeIcon size={36} radius="md" variant="gradient" gradient={{ from: 'blue', to: 'cyan' }}>
-          <IconRocket size={20} />
-        </ThemeIcon>
-        <Text fw={700} size="sm">Mission Marketing</Text>
+        <Image src="/logo.png" alt="localhost" w={36} h={36} radius="md" />
+        <Text fw={700} size="sm">localhost</Text>
       </Stack>
       <Divider mb="md" />
       <Stack gap={4}>
