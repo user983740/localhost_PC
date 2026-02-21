@@ -60,7 +60,7 @@ export function StoreSetupForm() {
         detailAddress: values.detailAddress || undefined,
         businessNumber: values.businessNumber || undefined,
       })
-      setStoreId(result.id)
+      setStoreId(String(result.id))
       router.navigate({ to: '/dashboard' })
     } catch (err) {
       if (err instanceof ApiRequestError) {

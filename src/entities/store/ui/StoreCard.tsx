@@ -1,6 +1,5 @@
-import { Card, Group, Text, Stack, Progress, ThemeIcon } from '@mantine/core'
+import { Card, Group, Text, Stack, ThemeIcon } from '@mantine/core'
 import { IconBuildingStore } from '@tabler/icons-react'
-import { formatCurrency } from '@/shared/lib/format'
 import type { Store } from '../model/types'
 
 interface StoreCardProps {
@@ -8,10 +7,6 @@ interface StoreCardProps {
 }
 
 export function StoreCard({ store }: StoreCardProps) {
-  const budgetUsage = store.totalBudget > 0
-    ? (store.usedBudget / store.totalBudget) * 100
-    : 0
-
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Group mb="md">
@@ -20,7 +15,6 @@ export function StoreCard({ store }: StoreCardProps) {
         </ThemeIcon>
         <div>
           <Text fw={600} size="lg">{store.name}</Text>
-          <Text size="sm" c="dimmed">{store.category}</Text>
         </div>
       </Group>
 
@@ -29,23 +23,18 @@ export function StoreCard({ store }: StoreCardProps) {
           <Text size="sm" c="dimmed">주소</Text>
           <Text size="sm">{store.address}</Text>
         </Group>
-        <Group justify="space-between">
-          <Text size="sm" c="dimmed">전화번호</Text>
-          <Text size="sm">{store.phone}</Text>
-        </Group>
-        <Group justify="space-between">
-          <Text size="sm" c="dimmed">영업시간</Text>
-          <Text size="sm">{store.businessHours}</Text>
-        </Group>
-        <div>
-          <Group justify="space-between" mb={4}>
-            <Text size="sm" c="dimmed">예산 사용</Text>
-            <Text size="sm">
-              {formatCurrency(store.usedBudget)} / {formatCurrency(store.totalBudget)}
-            </Text>
+        {store.detailAddress && (
+          <Group justify="space-between">
+            <Text size="sm" c="dimmed">상세주소</Text>
+            <Text size="sm">{store.detailAddress}</Text>
           </Group>
-          <Progress value={budgetUsage} size="sm" radius="xl" />
-        </div>
+        )}
+        {store.businessNumber && (
+          <Group justify="space-between">
+            <Text size="sm" c="dimmed">사업자번호</Text>
+            <Text size="sm">{store.businessNumber}</Text>
+          </Group>
+        )}
       </Stack>
     </Card>
   )

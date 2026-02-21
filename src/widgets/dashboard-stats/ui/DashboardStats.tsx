@@ -2,23 +2,19 @@ import { SimpleGrid, Card, Group, Text, ThemeIcon } from '@mantine/core'
 import {
   IconTarget,
   IconCoin,
-  IconTrendingUp,
   IconChecks,
 } from '@tabler/icons-react'
 import { formatCurrency } from '@/shared/lib/format'
 import type { Mission } from '@/entities/mission/model/types'
-import type { Store } from '@/entities/store/model/types'
 
 interface DashboardStatsProps {
   missions: Mission[]
-  store?: Store
 }
 
-export function DashboardStats({ missions, store }: DashboardStatsProps) {
+export function DashboardStats({ missions }: DashboardStatsProps) {
   const activeMissions = missions.filter((m) => m.active).length
   const totalMissions = missions.length
   const totalRewardBudget = missions.reduce((sum, m) => sum + m.rewardAmount, 0)
-  const remainingBudget = store ? store.totalBudget - store.usedBudget : 0
 
   const stats = [
     {
@@ -39,16 +35,10 @@ export function DashboardStats({ missions, store }: DashboardStatsProps) {
       icon: IconCoin,
       color: 'orange',
     },
-    {
-      title: '잔여 예산',
-      value: formatCurrency(remainingBudget),
-      icon: IconTrendingUp,
-      color: 'green',
-    },
   ]
 
   return (
-    <SimpleGrid cols={{ base: 1, xs: 2, md: 4 }}>
+    <SimpleGrid cols={{ base: 1, xs: 2, md: 3 }}>
       {stats.map((stat) => (
         <Card key={stat.title} shadow="sm" padding="lg" radius="md" withBorder>
           <Group justify="space-between">

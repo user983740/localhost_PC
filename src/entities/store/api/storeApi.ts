@@ -1,18 +1,17 @@
-import { delay } from '@/shared/lib/delay'
-import { mockStores } from '@/mocks/stores'
+import { fetchClient } from '@/shared/lib/fetchClient'
 import type { Store } from '../model/types'
 
-let stores = [...mockStores]
-
-export function getStoresData() {
-  return stores
+export function getStore(storeId: string): Promise<Store> {
+  return fetchClient<Store>(`/api/stores/${storeId}`)
 }
 
-export function setStoresData(data: Store[]) {
-  stores = data
+export function getMyStores(): Promise<Store[]> {
+  return fetchClient<Store[]>('/api/stores/my', { auth: true })
 }
 
-export async function getStore(storeId: string): Promise<Store | undefined> {
-  await delay()
-  return stores.find((s) => s.id === storeId)
+export function deleteStore(storeId: string): Promise<void> {
+  return fetchClient('/api/stores/' + storeId, {
+    method: 'DELETE',
+    auth: true,
+  })
 }

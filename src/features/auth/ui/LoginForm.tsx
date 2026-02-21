@@ -31,7 +31,7 @@ export function LoginForm() {
     try {
       const result = await loginApi(values)
       const user: User = {
-        id: result.userId,
+        id: String(result.userId),
         username: values.username,
         role: result.role as User['role'],
       }

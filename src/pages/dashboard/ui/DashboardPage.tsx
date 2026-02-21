@@ -4,17 +4,15 @@ import { PageHeader } from '@/shared/ui/PageHeader'
 import { DashboardStats } from '@/widgets/dashboard-stats/ui/DashboardStats'
 import { MissionList } from '@/widgets/mission-list/ui/MissionList'
 import { useMissions } from '@/entities/mission/model/hooks'
-import { useStore } from '@/entities/store/model/hooks'
 import { useAuthStore } from '@/features/auth/model/authStore'
 
 export function DashboardPage() {
   const user = useAuthStore((s) => s.user)
   const storeId = user?.storeId ?? ''
-  const { data: missions = [], isLoading: missionsLoading } = useMissions(storeId)
-  const { data: store, isLoading: storeLoading } = useStore(storeId)
+  const { data: missions = [], isLoading } = useMissions(storeId)
   const router = useRouter()
 
-  if (missionsLoading || storeLoading) {
+  if (isLoading) {
     return (
       <Center py={100}>
         <Loader />
@@ -27,7 +25,7 @@ export function DashboardPage() {
   return (
     <Stack>
       <PageHeader title="대시보드" description="매장 운영 현황을 한눈에 확인하세요" />
-      <DashboardStats missions={missions} store={store} />
+      <DashboardStats missions={missions} />
       <PageHeader title="활성 미션" />
       <MissionList
         missions={activeMissions}

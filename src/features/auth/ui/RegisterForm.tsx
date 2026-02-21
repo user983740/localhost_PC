@@ -46,7 +46,7 @@ export function RegisterForm() {
         role: 'OWNER',
       })
       const user: User = {
-        id: result.userId,
+        id: String(result.userId),
         username: values.username,
         role: result.role as User['role'],
       }

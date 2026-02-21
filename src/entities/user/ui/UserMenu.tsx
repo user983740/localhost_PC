@@ -8,8 +8,8 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user, onLogout }: UserMenuProps) {
-  const displayName = user.name ?? user.username
-  const displayEmail = user.email ?? user.username
+  const displayName = user.username
+  const displayEmail = user.username
 
   return (
     <Menu shadow="md" width={200} position="bottom-end">
