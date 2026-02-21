@@ -76,6 +76,8 @@ export function MissionEditPage({ missionId }: MissionEditPageProps) {
       <PageHeader title="미션 수정" description={MISSION_TYPE_LABELS[mission.type] ?? mission.type} />
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <MissionForm
+          storeId={storeId}
+          missionId={missionId}
           initialValues={mission}
           onSubmit={(v) => mutation.mutate(v)}
           loading={mutation.isPending}

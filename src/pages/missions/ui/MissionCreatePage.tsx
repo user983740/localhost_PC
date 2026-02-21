@@ -48,7 +48,7 @@ export function MissionCreatePage() {
       </Group>
       <PageHeader title="새 미션 생성" description="새로운 미션을 만들어 고객을 유치하세요" />
       <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <MissionForm onSubmit={(v) => mutation.mutate(v)} loading={mutation.isPending} />
+        <MissionForm storeId={storeId} onSubmit={(v) => mutation.mutate(v)} loading={mutation.isPending} />
       </Card>
     </Stack>
   )

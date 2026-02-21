@@ -8,6 +8,10 @@ interface MissionCardProps {
   onClick?: () => void
 }
 
+const DAY_LABELS: Record<string, string> = {
+  MON: '월', TUE: '화', WED: '수', THU: '목', FRI: '금', SAT: '토', SUN: '일',
+}
+
 function getConfigSummary(type: string, configJson: string): string | null {
   try {
     const config = JSON.parse(configJson)
@@ -15,11 +19,18 @@ function getConfigSummary(type: string, configJson: string): string | null {
       case 'RECEIPT':
         return config.targetProductKey ? `대상 제품: ${config.targetProductKey}` : null
       case 'DWELL':
-        return config.minStayMinutes ? `최소 ${config.minStayMinutes}분 체류` : null
-      case 'TIME_WINDOW':
-        return config.startHour != null && config.endHour != null
+        return config.durationMinutes ? `${config.durationMinutes}분 체류` : null
+      case 'TIME_WINDOW': {
+        const time = config.startHour != null && config.endHour != null
           ? `${config.startHour}시 ~ ${config.endHour}시`
           : null
+        const days = Array.isArray(config.days)
+          ? config.days.map((d: string) => DAY_LABELS[d] ?? d).join('·')
+          : null
+        return [time, days].filter(Boolean).join(' / ') || null
+      }
+      case 'INVENTORY':
+        return config.answerImageUrl ? '답안 이미지 등록됨' : null
       case 'STAMP':
         return config.requiredCount ? `${config.requiredCount}회 방문` : null
       default:

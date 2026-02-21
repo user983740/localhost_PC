@@ -1,7 +1,11 @@
-import { Card, Group, Text, Stack, Divider, Badge } from '@mantine/core'
+import { Card, Group, Text, Stack, Divider, Badge, Image } from '@mantine/core'
 import { MISSION_TYPE_LABELS, MISSION_TYPE_COLORS } from '@/shared/config/constants'
 import { formatCurrency } from '@/shared/lib/format'
 import type { Mission } from '../model/types'
+
+const DAY_LABELS: Record<string, string> = {
+  MON: '월', TUE: '화', WED: '수', THU: '목', FRI: '금', SAT: '토', SUN: '일',
+}
 
 interface MissionDetailViewProps {
   mission: Mission
@@ -39,44 +43,56 @@ export function MissionDetailView({ mission }: MissionDetailViewProps) {
           </Group>
 
           {mission.type === 'RECEIPT' && (
-            <>
-              <Group justify="space-between">
-                <Text c="dimmed">대상 제품명</Text>
-                <Text fw={500}>{(config.targetProductKey as string) || '-'}</Text>
-              </Group>
-              <Group justify="space-between">
-                <Text c="dimmed">신뢰도 임계값</Text>
-                <Text>{(config.confidenceThreshold as number) ?? 0.8}</Text>
-              </Group>
-            </>
+            <Group justify="space-between">
+              <Text c="dimmed">대상 제품명</Text>
+              <Text fw={500}>{(config.targetProductKey as string) || '-'}</Text>
+            </Group>
           )}
 
-          {mission.type === 'DWELL' && config.minStayMinutes != null && (
+          {mission.type === 'DWELL' && config.durationMinutes != null && (
             <Group justify="space-between">
-              <Text c="dimmed">최소 체류 시간</Text>
-              <Text>{String(config.minStayMinutes)}분</Text>
+              <Text c="dimmed">체류 시간</Text>
+              <Text>{String(config.durationMinutes)}분</Text>
             </Group>
           )}
 
           {mission.type === 'TIME_WINDOW' && (
-            <Group justify="space-between">
-              <Text c="dimmed">방문 시간대</Text>
-              <Text>{String(config.startHour)}시 ~ {String(config.endHour)}시</Text>
-            </Group>
+            <>
+              <Group justify="space-between">
+                <Text c="dimmed">방문 시간대</Text>
+                <Text>{String(config.startHour)}시 ~ {String(config.endHour)}시</Text>
+              </Group>
+              {Array.isArray(config.days) && (
+                <Group justify="space-between">
+                  <Text c="dimmed">요일</Text>
+                  <Text>{(config.days as string[]).map((d) => DAY_LABELS[d] ?? d).join(', ')}</Text>
+                </Group>
+              )}
+            </>
           )}
 
           {mission.type === 'STAMP' && config.requiredCount != null && (
             <Group justify="space-between">
-              <Text c="dimmed">필요 스탬프 수</Text>
+              <Text c="dimmed">필요 방문 횟수</Text>
               <Text>{String(config.requiredCount)}회</Text>
             </Group>
           )}
 
           {mission.type === 'INVENTORY' && (
-            <Group justify="space-between">
-              <Text c="dimmed">설정</Text>
-              <Text size="sm">{mission.configJson}</Text>
-            </Group>
+            <>
+              <Group justify="space-between">
+                <Text c="dimmed">답안 이미지</Text>
+                <Text fw={500}>{config.answerImageUrl ? '등록됨' : '미등록'}</Text>
+              </Group>
+              {config.answerImageUrl && (
+                <Image
+                  src={config.answerImageUrl as string}
+                  alt="답안 이미지"
+                  maw={300}
+                  radius="md"
+                />
+              )}
+            </>
           )}
         </Stack>
       </Card>
