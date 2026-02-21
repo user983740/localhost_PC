@@ -7,16 +7,17 @@ import { ConfirmModal } from '@/shared/ui/ConfirmModal'
 import { deleteMission } from '../api/deleteMissionApi'
 
 interface DeleteMissionButtonProps {
+  storeId: string
   missionId: string
   onDeleted?: () => void
 }
 
-export function DeleteMissionButton({ missionId, onDeleted }: DeleteMissionButtonProps) {
+export function DeleteMissionButton({ storeId, missionId, onDeleted }: DeleteMissionButtonProps) {
   const [opened, setOpened] = useState(false)
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    mutationFn: () => deleteMission(missionId),
+    mutationFn: () => deleteMission(storeId, missionId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['missions'] })
       notifications.show({

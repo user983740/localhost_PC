@@ -1,9 +1,9 @@
 import { SimpleGrid, Card, Group, Text, ThemeIcon } from '@mantine/core'
 import {
   IconTarget,
-  IconUsers,
   IconCoin,
   IconTrendingUp,
+  IconChecks,
 } from '@tabler/icons-react'
 import { formatCurrency } from '@/shared/lib/format'
 import type { Mission } from '@/entities/mission/model/types'
@@ -15,30 +15,27 @@ interface DashboardStatsProps {
 }
 
 export function DashboardStats({ missions, store }: DashboardStatsProps) {
-  const activeMissions = missions.filter((m) => m.status === 'ACTIVE').length
-  const totalParticipants = missions.reduce((sum, m) => sum + m.currentParticipants, 0)
-  const totalRewardSpent = missions.reduce(
-    (sum, m) => sum + m.currentParticipants * m.rewardAmount,
-    0,
-  )
+  const activeMissions = missions.filter((m) => m.active).length
+  const totalMissions = missions.length
+  const totalRewardBudget = missions.reduce((sum, m) => sum + m.rewardAmount, 0)
   const remainingBudget = store ? store.totalBudget - store.usedBudget : 0
 
   const stats = [
     {
-      title: '진행중 미션',
+      title: '활성 미션',
       value: `${activeMissions}개`,
       icon: IconTarget,
       color: 'blue',
     },
     {
-      title: '총 참여자',
-      value: `${totalParticipants}명`,
-      icon: IconUsers,
+      title: '전체 미션',
+      value: `${totalMissions}개`,
+      icon: IconChecks,
       color: 'teal',
     },
     {
-      title: '지출 리워드',
-      value: formatCurrency(totalRewardSpent),
+      title: '미션 리워드 합계',
+      value: formatCurrency(totalRewardBudget),
       icon: IconCoin,
       color: 'orange',
     },

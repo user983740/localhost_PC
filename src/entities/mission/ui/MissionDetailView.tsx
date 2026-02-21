@@ -51,24 +51,24 @@ export function MissionDetailView({ mission }: MissionDetailViewProps) {
             </>
           )}
 
-          {mission.type === 'DWELL' && config.minStayMinutes && (
+          {mission.type === 'DWELL' && config.minStayMinutes != null && (
             <Group justify="space-between">
               <Text c="dimmed">최소 체류 시간</Text>
-              <Text>{config.minStayMinutes as number}분</Text>
+              <Text>{String(config.minStayMinutes)}분</Text>
             </Group>
           )}
 
           {mission.type === 'TIME_WINDOW' && (
             <Group justify="space-between">
               <Text c="dimmed">방문 시간대</Text>
-              <Text>{config.startHour as number}시 ~ {config.endHour as number}시</Text>
+              <Text>{String(config.startHour)}시 ~ {String(config.endHour)}시</Text>
             </Group>
           )}
 
-          {mission.type === 'STAMP' && config.requiredCount && (
+          {mission.type === 'STAMP' && config.requiredCount != null && (
             <Group justify="space-between">
               <Text c="dimmed">필요 스탬프 수</Text>
-              <Text>{config.requiredCount as number}회</Text>
+              <Text>{String(config.requiredCount)}회</Text>
             </Group>
           )}
 

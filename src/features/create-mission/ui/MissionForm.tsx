@@ -1,6 +1,6 @@
 import { TextInput, Select, NumberInput, Button, Stack } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import type { Mission, MissionType, CreateMissionRequest, ReceiptConfig } from '@/entities/mission/model/types'
+import type { Mission, MissionType, CreateMissionRequest } from '@/entities/mission/model/types'
 
 interface MissionFormProps {
   initialValues?: Mission
@@ -32,8 +32,8 @@ export function MissionForm({ initialValues, onSubmit, loading }: MissionFormPro
       type: (initialValues?.type ?? 'RECEIPT') as MissionType,
       rewardAmount: initialValues?.rewardAmount ?? 1000,
       // RECEIPT
-      targetProductKey: (parsedConfig as ReceiptConfig).targetProductKey ?? '',
-      confidenceThreshold: (parsedConfig as ReceiptConfig).confidenceThreshold ?? 0.8,
+      targetProductKey: (parsedConfig.targetProductKey as string) ?? '',
+      confidenceThreshold: (parsedConfig.confidenceThreshold as number) ?? 0.8,
       // DWELL
       minStayMinutes: (parsedConfig.minStayMinutes as number) ?? 30,
       // TIME_WINDOW

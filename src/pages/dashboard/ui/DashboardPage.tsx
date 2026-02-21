@@ -22,13 +22,13 @@ export function DashboardPage() {
     )
   }
 
-  const activeMissions = missions.filter((m) => m.status === 'ACTIVE')
+  const activeMissions = missions.filter((m) => m.active)
 
   return (
     <Stack>
       <PageHeader title="대시보드" description="매장 운영 현황을 한눈에 확인하세요" />
       <DashboardStats missions={missions} store={store} />
-      <PageHeader title="진행중인 미션" />
+      <PageHeader title="활성 미션" />
       <MissionList
         missions={activeMissions}
         onMissionClick={(id) => router.navigate({ to: '/missions/$missionId', params: { missionId: id } })}
