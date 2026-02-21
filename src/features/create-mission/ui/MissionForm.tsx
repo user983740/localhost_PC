@@ -1,9 +1,9 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { TextInput, NumberInput, Button, Stack, Group, Text, FileInput, Image, Alert } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { IconPhoto, IconInfoCircle } from '@tabler/icons-react'
-import { getInventoryPresignedUrl, getMissionImagePresignedUrl, uploadToS3 } from '@/entities/mission/api/presignedUrlApi'
+import { getInventoryPresignedUrl, getMissionImagePresignedUrl, confirmImageUpload, uploadToS3 } from '@/entities/mission/api/presignedUrlApi'
 import type { Mission, MissionType, DayOfWeek, CreateMissionRequest } from '@/entities/mission/model/types'
 
 interface MissionFormProps {
@@ -34,7 +34,10 @@ const dayOptions = [
   { value: 'SUN', label: '일' },
 ]
 
-function parseConfigJson(configJson: string): Record<string, unknown> {
+function parseConfigJson(configJson: string | Record<string, unknown>): Record<string, unknown> {
+  if (typeof configJson === 'object' && configJson !== null) {
+    return configJson as Record<string, unknown>
+  }
   try {
     return JSON.parse(configJson)
   } catch {
@@ -48,17 +51,36 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
   const [answerImageUrl, setAnswerImageUrl] = useState<string>(
     (parsedConfig.answerImageUrl as string) ?? '',
   )
+  const [previewUrl, setPreviewUrl] = useState<string>('')
   const [uploading, setUploading] = useState(false)
+
+  // 컴포넌트 언마운트 시 object URL 해제
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+    }
+  }, [previewUrl])
 
   const handleImageUpload = useCallback(
     async (file: File | null) => {
       if (!file) return
+
+      // 로컬 미리보기 즉시 표시
+      if (previewUrl) URL.revokeObjectURL(previewUrl)
+      setPreviewUrl(URL.createObjectURL(file))
+
       setUploading(true)
       try {
         const { presignedUrl, imageUrl } = missionId
           ? await getMissionImagePresignedUrl(storeId, missionId, file.type)
           : await getInventoryPresignedUrl(storeId, file.type)
         await uploadToS3(presignedUrl, file)
+
+        // 기존 미션 수정 시 confirm 호출하여 configJson.answerImageUrl 갱신
+        if (missionId) {
+          await confirmImageUpload(storeId, missionId, imageUrl)
+        }
+
         setAnswerImageUrl(imageUrl)
         notifications.show({
           title: '업로드 완료',
@@ -66,6 +88,8 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
           color: 'green',
         })
       } catch {
+        // 업로드 실패 시 미리보기 제거
+        setPreviewUrl('')
         notifications.show({
           title: '업로드 실패',
           message: '이미지 업로드에 실패했습니다. 다시 시도해주세요.',
@@ -75,7 +99,7 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
         setUploading(false)
       }
     },
-    [storeId, missionId],
+    [storeId, missionId, previewUrl],
   )
 
   const form = useForm({
@@ -261,9 +285,9 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
               disabled={uploading}
               description={uploading ? '업로드 중...' : undefined}
             />
-            {answerImageUrl && (
+            {(previewUrl || answerImageUrl) && (
               <Image
-                src={answerImageUrl}
+                src={previewUrl || answerImageUrl}
                 alt="정답 상품 이미지"
                 radius="md"
                 maw={400}

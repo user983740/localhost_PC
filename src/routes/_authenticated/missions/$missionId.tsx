@@ -1,11 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { MissionDetailPage } from '@/pages/missions/ui/MissionDetailPage'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_authenticated/missions/$missionId')({
-  component: MissionDetailRoute,
+  component: () => <Outlet />,
 })
-
-function MissionDetailRoute() {
-  const { missionId } = Route.useParams()
-  return <MissionDetailPage missionId={missionId} />
-}

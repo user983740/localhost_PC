@@ -8,7 +8,7 @@ export interface Mission {
   rewardAmount: number
   lat: number
   lng: number
-  active: boolean
+  isActive: boolean
 }
 
 export interface CreateMissionRequest {
@@ -21,7 +21,7 @@ export interface CreateMissionRequest {
 export interface UpdateMissionRequest {
   configJson: Record<string, unknown>
   rewardAmount: number
-  active: boolean
+  isActive: boolean
 }
 
 export interface ImageConfirmRequest {

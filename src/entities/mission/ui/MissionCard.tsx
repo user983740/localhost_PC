@@ -12,9 +12,11 @@ const DAY_LABELS: Record<string, string> = {
   MON: '월', TUE: '화', WED: '수', THU: '목', FRI: '금', SAT: '토', SUN: '일',
 }
 
-function getConfigSummary(type: string, configJson: string): string | null {
+function getConfigSummary(type: string, configJson: string | Record<string, unknown>): string | null {
   try {
-    const config = JSON.parse(configJson)
+    const config = typeof configJson === 'object' && configJson !== null
+      ? configJson
+      : JSON.parse(configJson)
     switch (type) {
       case 'RECEIPT':
         return config.targetProductKey ? `대상 제품: ${config.targetProductKey}` : null
@@ -57,8 +59,8 @@ export function MissionCard({ mission, onClick }: MissionCardProps) {
         <Badge color={MISSION_TYPE_COLORS[mission.type]} variant="light">
           {MISSION_TYPE_LABELS[mission.type]}
         </Badge>
-        <Badge color={mission.active ? 'green' : 'gray'} variant="light">
-          {mission.active ? '활성' : '비활성'}
+        <Badge color={mission.isActive ? 'green' : 'gray'} variant="light">
+          {mission.isActive ? '활성' : '비활성'}
         </Badge>
       </Group>
 

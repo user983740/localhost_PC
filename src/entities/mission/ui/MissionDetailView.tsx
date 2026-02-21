@@ -11,7 +11,10 @@ interface MissionDetailViewProps {
   mission: Mission
 }
 
-function parseConfig(configJson: string): Record<string, unknown> {
+function parseConfig(configJson: string | Record<string, unknown>): Record<string, unknown> {
+  if (typeof configJson === 'object' && configJson !== null) {
+    return configJson as Record<string, unknown>
+  }
   try {
     return JSON.parse(configJson)
   } catch {
@@ -29,8 +32,8 @@ export function MissionDetailView({ mission }: MissionDetailViewProps) {
           <Badge color={MISSION_TYPE_COLORS[mission.type]} variant="light" size="lg">
             {MISSION_TYPE_LABELS[mission.type]}
           </Badge>
-          <Badge color={mission.active ? 'green' : 'gray'} variant="light" size="lg">
-            {mission.active ? '활성' : '비활성'}
+          <Badge color={mission.isActive ? 'green' : 'gray'} variant="light" size="lg">
+            {mission.isActive ? '활성' : '비활성'}
           </Badge>
         </Group>
 

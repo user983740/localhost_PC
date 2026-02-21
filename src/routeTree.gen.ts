@@ -19,6 +19,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedMissionsIndexRouteImport } from './routes/_authenticated/missions/index'
 import { Route as AuthenticatedMissionsCreateRouteImport } from './routes/_authenticated/missions/create'
 import { Route as AuthenticatedMissionsMissionIdRouteImport } from './routes/_authenticated/missions/$missionId'
+import { Route as AuthenticatedMissionsMissionIdIndexRouteImport } from './routes/_authenticated/missions/$missionId.index'
 import { Route as AuthenticatedMissionsMissionIdEditRouteImport } from './routes/_authenticated/missions/$missionId.edit'
 
 const StoreSetupRoute = StoreSetupRouteImport.update({
@@ -73,6 +74,12 @@ const AuthenticatedMissionsMissionIdRoute =
     path: '/missions/$missionId',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedMissionsMissionIdIndexRoute =
+  AuthenticatedMissionsMissionIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedMissionsMissionIdRoute,
+  } as any)
 const AuthenticatedMissionsMissionIdEditRoute =
   AuthenticatedMissionsMissionIdEditRouteImport.update({
     id: '/edit',
@@ -91,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/missions/create': typeof AuthenticatedMissionsCreateRoute
   '/missions/': typeof AuthenticatedMissionsIndexRoute
   '/missions/$missionId/edit': typeof AuthenticatedMissionsMissionIdEditRoute
+  '/missions/$missionId/': typeof AuthenticatedMissionsMissionIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,10 +107,10 @@ export interface FileRoutesByTo {
   '/store-setup': typeof StoreSetupRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/store': typeof AuthenticatedStoreRoute
-  '/missions/$missionId': typeof AuthenticatedMissionsMissionIdRouteWithChildren
   '/missions/create': typeof AuthenticatedMissionsCreateRoute
   '/missions': typeof AuthenticatedMissionsIndexRoute
   '/missions/$missionId/edit': typeof AuthenticatedMissionsMissionIdEditRoute
+  '/missions/$missionId': typeof AuthenticatedMissionsMissionIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   '/_authenticated/missions/create': typeof AuthenticatedMissionsCreateRoute
   '/_authenticated/missions/': typeof AuthenticatedMissionsIndexRoute
   '/_authenticated/missions/$missionId/edit': typeof AuthenticatedMissionsMissionIdEditRoute
+  '/_authenticated/missions/$missionId/': typeof AuthenticatedMissionsMissionIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/missions/create'
     | '/missions/'
     | '/missions/$missionId/edit'
+    | '/missions/$missionId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -139,10 +149,10 @@ export interface FileRouteTypes {
     | '/store-setup'
     | '/dashboard'
     | '/store'
-    | '/missions/$missionId'
     | '/missions/create'
     | '/missions'
     | '/missions/$missionId/edit'
+    | '/missions/$missionId'
   id:
     | '__root__'
     | '/'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/_authenticated/missions/create'
     | '/_authenticated/missions/'
     | '/_authenticated/missions/$missionId/edit'
+    | '/_authenticated/missions/$missionId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -238,6 +249,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMissionsMissionIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/missions/$missionId/': {
+      id: '/_authenticated/missions/$missionId/'
+      path: '/'
+      fullPath: '/missions/$missionId/'
+      preLoaderRoute: typeof AuthenticatedMissionsMissionIdIndexRouteImport
+      parentRoute: typeof AuthenticatedMissionsMissionIdRoute
+    }
     '/_authenticated/missions/$missionId/edit': {
       id: '/_authenticated/missions/$missionId/edit'
       path: '/edit'
@@ -250,12 +268,15 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedMissionsMissionIdRouteChildren {
   AuthenticatedMissionsMissionIdEditRoute: typeof AuthenticatedMissionsMissionIdEditRoute
+  AuthenticatedMissionsMissionIdIndexRoute: typeof AuthenticatedMissionsMissionIdIndexRoute
 }
 
 const AuthenticatedMissionsMissionIdRouteChildren: AuthenticatedMissionsMissionIdRouteChildren =
   {
     AuthenticatedMissionsMissionIdEditRoute:
       AuthenticatedMissionsMissionIdEditRoute,
+    AuthenticatedMissionsMissionIdIndexRoute:
+      AuthenticatedMissionsMissionIdIndexRoute,
   }
 
 const AuthenticatedMissionsMissionIdRouteWithChildren =

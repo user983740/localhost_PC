@@ -27,7 +27,7 @@ export function MissionEditPage({ missionId }: MissionEditPageProps) {
       updateMission(storeId, missionId, {
         configJson: input.configJson,
         rewardAmount: input.rewardAmount,
-        active: mission?.active ?? true,
+        isActive: mission?.isActive ?? true,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['missions'] })

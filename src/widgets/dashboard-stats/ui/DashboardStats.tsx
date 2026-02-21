@@ -12,7 +12,7 @@ interface DashboardStatsProps {
 }
 
 export function DashboardStats({ missions }: DashboardStatsProps) {
-  const activeMissions = missions.filter((m) => m.active).length
+  const activeMissions = missions.filter((m) => m.isActive).length
   const totalMissions = missions.length
   const totalRewardBudget = missions.reduce((sum, m) => sum + m.rewardAmount, 0)
 

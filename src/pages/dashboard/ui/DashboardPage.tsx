@@ -20,7 +20,7 @@ export function DashboardPage() {
     )
   }
 
-  const activeMissions = missions.filter((m) => m.active)
+  const activeMissions = missions.filter((m) => m.isActive)
 
   return (
     <Stack>
