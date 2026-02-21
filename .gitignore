@@ -26,5 +26,8 @@ dist-ssr
 # Claude
 CLAUDE.md
 
+# Store accounts (sensitive)
+.store-accounts.md
+
 # Scripts
 scripts/
