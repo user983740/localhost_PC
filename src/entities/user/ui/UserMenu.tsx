@@ -8,23 +8,26 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ user, onLogout }: UserMenuProps) {
+  const displayName = user.name ?? user.username
+  const displayEmail = user.email ?? user.username
+
   return (
     <Menu shadow="md" width={200} position="bottom-end">
       <Menu.Target>
         <UnstyledButton>
           <Group gap="xs">
             <Avatar radius="xl" size="sm" color="blue">
-              {user.name[0]}
+              {displayName[0]}
             </Avatar>
             <Text size="sm" fw={500}>
-              {user.name}
+              {displayName}
             </Text>
           </Group>
         </UnstyledButton>
       </Menu.Target>
 
       <Menu.Dropdown>
-        <Menu.Label>{user.email}</Menu.Label>
+        <Menu.Label>{displayEmail}</Menu.Label>
         <Menu.Item leftSection={<IconUser size={14} />} disabled>
           프로필
         </Menu.Item>

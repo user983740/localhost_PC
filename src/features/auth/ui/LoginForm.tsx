@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { TextInput, PasswordInput, Button, Stack, Alert } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { IconAlertCircle } from '@tabler/icons-react'
-import { login } from '../api/authApi'
+import { loginApi } from '../api/realAuthApi'
 import { useAuthStore } from '../model/authStore'
 import { useRouter } from '@tanstack/react-router'
+import { ApiRequestError } from '@/shared/lib/fetchClient'
+import type { User } from '@/entities/user/model/types'
 
 export function LoginForm() {
   const [error, setError] = useState<string | null>(null)
@@ -27,11 +29,20 @@ export function LoginForm() {
     setError(null)
     setLoading(true)
     try {
-      const result = await login(values)
-      setAuth(result.user, result.token)
+      const result = await loginApi(values)
+      const user: User = {
+        id: result.userId,
+        username: values.username,
+        role: result.role as User['role'],
+      }
+      setAuth(user, result.token)
       router.navigate({ to: '/dashboard' })
     } catch (err) {
-      setError(err instanceof Error ? err.message : '로그인에 실패했습니다.')
+      if (err instanceof ApiRequestError) {
+        setError(err.message)
+      } else {
+        setError('로그인에 실패했습니다.')
+      }
     } finally {
       setLoading(false)
     }

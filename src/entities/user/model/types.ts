@@ -1,11 +1,11 @@
 export interface User {
   id: string
   username: string
-  name: string
-  email: string
-  role: 'STORE_OWNER'
-  storeId: string
-  createdAt: string
+  name?: string
+  email?: string
+  role: 'STORE_OWNER' | 'OWNER'
+  storeId?: string
+  createdAt?: string
 }
 
 export interface LoginInput {
