@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { TextInput, Select, NumberInput, Button, Stack, MultiSelect, FileInput, Image, Alert } from '@mantine/core'
+import { TextInput, NumberInput, Button, Stack, Group, Text, FileInput, Image, Alert } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { IconPhoto, IconInfoCircle } from '@tabler/icons-react'
@@ -89,7 +89,7 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
       // TIME_WINDOW
       startHour: (parsedConfig.startHour as number) ?? 9,
       endHour: (parsedConfig.endHour as number) ?? 18,
-      days: (parsedConfig.days as DayOfWeek[]) ?? ['MON', 'TUE', 'WED', 'THU', 'FRI'],
+      days: (parsedConfig.days as DayOfWeek[]) ?? [],
       // STAMP
       requiredCount: (parsedConfig.requiredCount as number) ?? 3,
     },
@@ -103,6 +103,15 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
   })
 
   const handleSubmit = form.onSubmit((values) => {
+    if (values.type === 'INVENTORY' && uploading) {
+      notifications.show({
+        title: '업로드 진행 중',
+        message: '이미지 업로드가 완료될 때까지 잠시 기다려주세요.',
+        color: 'blue',
+      })
+      return
+    }
+
     if (values.type === 'INVENTORY' && !answerImageUrl) {
       notifications.show({
         title: '이미지 필요',
@@ -144,12 +153,21 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
   return (
     <form onSubmit={handleSubmit}>
       <Stack>
-        <Select
-          label="미션 유형"
-          data={missionTypeOptions}
-          allowDeselect={false}
-          {...form.getInputProps('type')}
-        />
+        <div>
+          <Text size="sm" fw={500} mb={4}>미션 유형</Text>
+          <Group gap="xs" grow>
+            {missionTypeOptions.map((opt) => (
+              <Button
+                key={opt.value}
+                variant={form.values.type === opt.value ? 'filled' : 'default'}
+                onClick={() => form.setFieldValue('type', opt.value as MissionType)}
+                type="button"
+              >
+                {opt.label}
+              </Button>
+            ))}
+          </Group>
+        </div>
         <NumberInput
           label="리워드 금액 (원)"
           min={100}
@@ -187,11 +205,35 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
               max={23}
               {...form.getInputProps('endHour')}
             />
-            <MultiSelect
-              label="요일"
-              data={dayOptions}
-              {...form.getInputProps('days')}
-            />
+            <div>
+              <Text size="sm" fw={500} mb={4}>요일</Text>
+              <Group gap="xs" grow>
+                {dayOptions.map((day) => {
+                  const selected = form.values.days.includes(day.value as DayOfWeek)
+                  return (
+                    <Button
+                      key={day.value}
+                      variant={selected ? 'filled' : 'default'}
+                      onClick={() => {
+                        const current = form.values.days
+                        form.setFieldValue(
+                          'days',
+                          selected
+                            ? current.filter((d) => d !== day.value)
+                            : [...current, day.value as DayOfWeek],
+                        )
+                      }}
+                      type="button"
+                    >
+                      {day.label}
+                    </Button>
+                  )
+                })}
+              </Group>
+              {form.errors.days && (
+                <Text size="xs" c="red" mt={4}>{form.errors.days}</Text>
+              )}
+            </div>
           </>
         )}
 
