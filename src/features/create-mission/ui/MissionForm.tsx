@@ -285,14 +285,17 @@ export function MissionForm({ storeId, missionId, initialValues, onSubmit, loadi
               disabled={uploading}
               description={uploading ? '업로드 중...' : undefined}
             />
-            {(previewUrl || answerImageUrl) && (
+            {previewUrl && (
               <Image
-                src={previewUrl || answerImageUrl}
+                src={previewUrl}
                 alt="정답 상품 이미지"
                 radius="md"
                 maw={400}
                 fit="contain"
               />
+            )}
+            {!previewUrl && answerImageUrl && (
+              <Text size="sm" c="dimmed">답안 이미지 등록됨</Text>
             )}
           </>
         )}

@@ -1,4 +1,4 @@
-import { Card, Group, Text, Stack, Divider, Badge, Image } from '@mantine/core'
+import { Card, Group, Text, Stack, Divider, Badge } from '@mantine/core'
 import { MISSION_TYPE_LABELS, MISSION_TYPE_COLORS } from '@/shared/config/constants'
 import { formatCurrency } from '@/shared/lib/format'
 import type { Mission } from '../model/types'
@@ -82,20 +82,10 @@ export function MissionDetailView({ mission }: MissionDetailViewProps) {
           )}
 
           {mission.type === 'INVENTORY' && (
-            <>
-              <Group justify="space-between">
-                <Text c="dimmed">답안 이미지</Text>
-                <Text fw={500}>{config.answerImageUrl ? '등록됨' : '미등록'}</Text>
-              </Group>
-              {config.answerImageUrl && (
-                <Image
-                  src={config.answerImageUrl as string}
-                  alt="답안 이미지"
-                  maw={300}
-                  radius="md"
-                />
-              )}
-            </>
+            <Group justify="space-between">
+              <Text c="dimmed">답안 이미지</Text>
+              <Text fw={500}>{config.answerImageUrl ? '등록됨' : '미등록'}</Text>
+            </Group>
           )}
         </Stack>
       </Card>
