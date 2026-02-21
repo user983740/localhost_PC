@@ -1,29 +1,15 @@
 export const MISSION_TYPE_LABELS: Record<string, string> = {
-  VISIT: '방문',
-  STAY: '체류',
-  PURCHASE: '구매',
-  REVISIT: '재방문',
-} as const
-
-export const MISSION_STATUS_LABELS: Record<string, string> = {
-  DRAFT: '임시저장',
-  ACTIVE: '진행중',
-  PAUSED: '일시중지',
-  COMPLETED: '완료',
-  CANCELLED: '취소',
-} as const
-
-export const MISSION_STATUS_COLORS: Record<string, string> = {
-  DRAFT: 'gray',
-  ACTIVE: 'blue',
-  PAUSED: 'yellow',
-  COMPLETED: 'green',
-  CANCELLED: 'red',
+  TIME_WINDOW: '시간대 방문',
+  DWELL: '체류',
+  RECEIPT: '영수증 인증',
+  INVENTORY: '재고 확인',
+  STAMP: '스탬프',
 } as const
 
 export const MISSION_TYPE_COLORS: Record<string, string> = {
-  VISIT: 'cyan',
-  STAY: 'violet',
-  PURCHASE: 'orange',
-  REVISIT: 'teal',
+  TIME_WINDOW: 'cyan',
+  DWELL: 'violet',
+  RECEIPT: 'orange',
+  INVENTORY: 'teal',
+  STAMP: 'pink',
 } as const

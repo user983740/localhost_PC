@@ -1,86 +1,98 @@
-import { TextInput, Textarea, Select, NumberInput, Button, Stack, Group } from '@mantine/core'
-import { DatePickerInput } from '@mantine/dates'
+import { TextInput, Select, NumberInput, Button, Stack } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import type { Mission, MissionType, CreateMissionInput } from '@/entities/mission/model/types'
+import type { Mission, MissionType, CreateMissionRequest, ReceiptConfig } from '@/entities/mission/model/types'
 
 interface MissionFormProps {
   initialValues?: Mission
-  onSubmit: (values: CreateMissionInput) => void
+  onSubmit: (values: CreateMissionRequest) => void
   loading?: boolean
 }
 
 const missionTypeOptions = [
-  { value: 'VISIT', label: '방문' },
-  { value: 'STAY', label: '체류' },
-  { value: 'PURCHASE', label: '구매' },
-  { value: 'REVISIT', label: '재방문' },
+  { value: 'TIME_WINDOW', label: '시간대 방문' },
+  { value: 'DWELL', label: '체류' },
+  { value: 'RECEIPT', label: '영수증 인증' },
+  { value: 'INVENTORY', label: '재고 확인' },
+  { value: 'STAMP', label: '스탬프' },
 ]
 
+function parseConfigJson(configJson: string): Record<string, unknown> {
+  try {
+    return JSON.parse(configJson)
+  } catch {
+    return {}
+  }
+}
+
 export function MissionForm({ initialValues, onSubmit, loading }: MissionFormProps) {
+  const parsedConfig = initialValues ? parseConfigJson(initialValues.configJson) : {}
+
   const form = useForm({
     initialValues: {
-      title: initialValues?.title ?? '',
-      description: initialValues?.description ?? '',
-      type: (initialValues?.type ?? 'VISIT') as MissionType,
+      type: (initialValues?.type ?? 'RECEIPT') as MissionType,
       rewardAmount: initialValues?.rewardAmount ?? 1000,
-      maxParticipants: initialValues?.maxParticipants ?? 50,
-      startDate: initialValues?.startDate ? new Date(initialValues.startDate) : new Date(),
-      endDate: initialValues?.endDate
-        ? new Date(initialValues.endDate)
-        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      minStayMinutes: initialValues?.conditions?.minStayMinutes ?? 0,
-      minPurchaseAmount: initialValues?.conditions?.minPurchaseAmount ?? 0,
-      revisitDays: initialValues?.conditions?.revisitDays ?? 0,
+      // RECEIPT
+      targetProductKey: (parsedConfig as ReceiptConfig).targetProductKey ?? '',
+      confidenceThreshold: (parsedConfig as ReceiptConfig).confidenceThreshold ?? 0.8,
+      // DWELL
+      minStayMinutes: (parsedConfig.minStayMinutes as number) ?? 30,
+      // TIME_WINDOW
+      startHour: (parsedConfig.startHour as number) ?? 9,
+      endHour: (parsedConfig.endHour as number) ?? 18,
+      // STAMP
+      requiredCount: (parsedConfig.requiredCount as number) ?? 3,
     },
     validate: {
-      title: (v) => (v.trim() ? null : '미션 제목을 입력해주세요'),
-      description: (v) => (v.trim() ? null : '미션 설명을 입력해주세요'),
       rewardAmount: (v) => (v > 0 ? null : '리워드 금액은 0보다 커야 합니다'),
-      maxParticipants: (v) => (v > 0 ? null : '최대 참여자 수는 0보다 커야 합니다'),
+      targetProductKey: (v, values) =>
+        values.type === 'RECEIPT' && !v.trim() ? '대상 제품명을 입력해주세요' : null,
     },
   })
 
   const handleSubmit = form.onSubmit((values) => {
-    const conditions: CreateMissionInput['conditions'] = {}
-    if (values.type === 'STAY' && values.minStayMinutes > 0) {
-      conditions.minStayMinutes = values.minStayMinutes
-    }
-    if (values.type === 'PURCHASE' && values.minPurchaseAmount > 0) {
-      conditions.minPurchaseAmount = values.minPurchaseAmount
-    }
-    if (values.type === 'REVISIT' && values.revisitDays > 0) {
-      conditions.revisitDays = values.revisitDays
+    let configJson: string
+
+    switch (values.type) {
+      case 'RECEIPT':
+        configJson = JSON.stringify({
+          targetProductKey: values.targetProductKey,
+          confidenceThreshold: values.confidenceThreshold,
+        })
+        break
+      case 'DWELL':
+        configJson = JSON.stringify({
+          minStayMinutes: values.minStayMinutes,
+        })
+        break
+      case 'TIME_WINDOW':
+        configJson = JSON.stringify({
+          startHour: values.startHour,
+          endHour: values.endHour,
+        })
+        break
+      case 'STAMP':
+        configJson = JSON.stringify({
+          requiredCount: values.requiredCount,
+        })
+        break
+      default:
+        configJson = '{}'
     }
 
     onSubmit({
-      title: values.title,
-      description: values.description,
       type: values.type,
+      configJson,
       rewardAmount: values.rewardAmount,
-      maxParticipants: values.maxParticipants,
-      startDate: values.startDate.toISOString(),
-      endDate: values.endDate.toISOString(),
-      conditions,
     })
   })
 
   return (
     <form onSubmit={handleSubmit}>
       <Stack>
-        <TextInput
-          label="미션 제목"
-          placeholder="미션 제목을 입력하세요"
-          {...form.getInputProps('title')}
-        />
-        <Textarea
-          label="미션 설명"
-          placeholder="미션에 대한 상세 설명을 입력하세요"
-          minRows={3}
-          {...form.getInputProps('description')}
-        />
         <Select
           label="미션 유형"
           data={missionTypeOptions}
+          allowDeselect={false}
           {...form.getInputProps('type')}
         />
         <NumberInput
@@ -89,42 +101,55 @@ export function MissionForm({ initialValues, onSubmit, loading }: MissionFormPro
           step={100}
           {...form.getInputProps('rewardAmount')}
         />
-        <NumberInput
-          label="최대 참여자 수"
-          min={1}
-          {...form.getInputProps('maxParticipants')}
-        />
-        <Group grow>
-          <DatePickerInput
-            label="시작일"
-            {...form.getInputProps('startDate')}
-          />
-          <DatePickerInput
-            label="종료일"
-            {...form.getInputProps('endDate')}
-          />
-        </Group>
 
-        {form.values.type === 'STAY' && (
+        {form.values.type === 'RECEIPT' && (
+          <>
+            <TextInput
+              label="대상 제품명"
+              placeholder="예: 아메리카노"
+              {...form.getInputProps('targetProductKey')}
+            />
+            <NumberInput
+              label="신뢰도 임계값"
+              min={0}
+              max={1}
+              step={0.1}
+              decimalScale={2}
+              {...form.getInputProps('confidenceThreshold')}
+            />
+          </>
+        )}
+
+        {form.values.type === 'DWELL' && (
           <NumberInput
             label="최소 체류 시간 (분)"
             min={1}
             {...form.getInputProps('minStayMinutes')}
           />
         )}
-        {form.values.type === 'PURCHASE' && (
-          <NumberInput
-            label="최소 구매 금액 (원)"
-            min={100}
-            step={100}
-            {...form.getInputProps('minPurchaseAmount')}
-          />
+
+        {form.values.type === 'TIME_WINDOW' && (
+          <>
+            <NumberInput
+              label="시작 시간 (시)"
+              min={0}
+              max={23}
+              {...form.getInputProps('startHour')}
+            />
+            <NumberInput
+              label="종료 시간 (시)"
+              min={0}
+              max={23}
+              {...form.getInputProps('endHour')}
+            />
+          </>
         )}
-        {form.values.type === 'REVISIT' && (
+
+        {form.values.type === 'STAMP' && (
           <NumberInput
-            label="재방문 기한 (일)"
+            label="필요 스탬프 수"
             min={1}
-            {...form.getInputProps('revisitDays')}
+            {...form.getInputProps('requiredCount')}
           />
         )}
 

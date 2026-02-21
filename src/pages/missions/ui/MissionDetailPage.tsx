@@ -1,18 +1,21 @@
-import { Stack, Loader, Center, Group, Button, Card, Title } from '@mantine/core'
+import { Stack, Loader, Center, Group, Button } from '@mantine/core'
 import { IconEdit, IconArrowLeft } from '@tabler/icons-react'
 import { useRouter } from '@tanstack/react-router'
 import { PageHeader } from '@/shared/ui/PageHeader'
 import { MissionDetailView } from '@/entities/mission/ui/MissionDetailView'
-import { ParticipantTable } from '@/entities/participant/ui/ParticipantTable'
 import { DeleteMissionButton } from '@/features/delete-mission/ui/DeleteMissionButton'
 import { useMission } from '@/entities/mission/model/hooks'
+import { useAuthStore } from '@/features/auth/model/authStore'
+import { MISSION_TYPE_LABELS } from '@/shared/config/constants'
 
 interface MissionDetailPageProps {
   missionId: string
 }
 
 export function MissionDetailPage({ missionId }: MissionDetailPageProps) {
-  const { data: mission, isLoading } = useMission(missionId)
+  const user = useAuthStore((s) => s.user)
+  const storeId = user?.storeId ?? ''
+  const { data: mission, isLoading } = useMission(storeId, missionId)
   const router = useRouter()
 
   if (isLoading) {
@@ -39,7 +42,7 @@ export function MissionDetailPage({ missionId }: MissionDetailPageProps) {
         </Button>
       </Group>
       <PageHeader
-        title={mission.title}
+        title={MISSION_TYPE_LABELS[mission.type] ?? mission.type}
         rightSection={
           <Group>
             <Button
@@ -48,24 +51,21 @@ export function MissionDetailPage({ missionId }: MissionDetailPageProps) {
               onClick={() =>
                 router.navigate({
                   to: '/missions/$missionId/edit',
-                  params: { missionId: mission.id },
+                  params: { missionId: String(mission.id) },
                 })
               }
             >
               수정
             </Button>
             <DeleteMissionButton
-              missionId={mission.id}
+              storeId={storeId}
+              missionId={String(mission.id)}
               onDeleted={() => router.navigate({ to: '/missions' })}
             />
           </Group>
         }
       />
       <MissionDetailView mission={mission} />
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Title order={4} mb="md">참여자 현황</Title>
-        <ParticipantTable missionId={missionId} />
-      </Card>
     </Stack>
   )
 }

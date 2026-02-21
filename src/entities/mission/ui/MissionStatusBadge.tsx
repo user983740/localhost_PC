@@ -1,15 +1,13 @@
 import { Badge } from '@mantine/core'
-import { MISSION_STATUS_LABELS, MISSION_STATUS_COLORS } from '@/shared/config/constants'
-import type { MissionStatus } from '../model/types'
 
-interface MissionStatusBadgeProps {
-  status: MissionStatus
+interface ActiveBadgeProps {
+  active: boolean
 }
 
-export function MissionStatusBadge({ status }: MissionStatusBadgeProps) {
+export function ActiveBadge({ active }: ActiveBadgeProps) {
   return (
-    <Badge color={MISSION_STATUS_COLORS[status]} variant="light">
-      {MISSION_STATUS_LABELS[status]}
+    <Badge color={active ? 'green' : 'gray'} variant="light">
+      {active ? '활성' : '비활성'}
     </Badge>
   )
 }

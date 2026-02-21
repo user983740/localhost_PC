@@ -7,16 +7,16 @@ import { PageHeader } from '@/shared/ui/PageHeader'
 import { MissionForm } from '@/features/create-mission/ui/MissionForm'
 import { createMission } from '@/features/create-mission/api/createMissionApi'
 import { useAuthStore } from '@/features/auth/model/authStore'
-import type { CreateMissionInput } from '@/entities/mission/model/types'
+import type { CreateMissionRequest } from '@/entities/mission/model/types'
 
 export function MissionCreatePage() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const user = useAuthStore((s) => s.user)
+  const storeId = user?.storeId ?? ''
 
   const mutation = useMutation({
-    mutationFn: (input: CreateMissionInput) =>
-      createMission(user?.storeId ?? '', input),
+    mutationFn: (input: CreateMissionRequest) => createMission(storeId, input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['missions'] })
       notifications.show({

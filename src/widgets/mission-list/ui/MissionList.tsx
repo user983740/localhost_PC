@@ -24,7 +24,7 @@ export function MissionList({ missions, onMissionClick }: MissionListProps) {
         <MissionCard
           key={mission.id}
           mission={mission}
-          onClick={() => onMissionClick(mission.id)}
+          onClick={() => onMissionClick(String(mission.id))}
         />
       ))}
     </SimpleGrid>

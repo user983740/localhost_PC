@@ -1,8 +1,8 @@
-import { delay } from '@/shared/lib/delay'
-import { getMissionsData, setMissionsData } from '@/entities/mission/api/missionApi'
+import { fetchClient } from '@/shared/lib/fetchClient'
 
-export async function deleteMission(missionId: string): Promise<void> {
-  await delay(500)
-  const missions = getMissionsData()
-  setMissionsData(missions.filter((m) => m.id !== missionId))
+export async function deleteMission(storeId: string, missionId: string): Promise<void> {
+  await fetchClient(`/api/stores/${storeId}/missions/${missionId}`, {
+    method: 'DELETE',
+    auth: true,
+  })
 }

@@ -7,7 +7,9 @@ import { PageHeader } from '@/shared/ui/PageHeader'
 import { MissionForm } from '@/features/create-mission/ui/MissionForm'
 import { updateMission } from '@/features/edit-mission/api/updateMissionApi'
 import { useMission } from '@/entities/mission/model/hooks'
-import type { CreateMissionInput } from '@/entities/mission/model/types'
+import { useAuthStore } from '@/features/auth/model/authStore'
+import { MISSION_TYPE_LABELS } from '@/shared/config/constants'
+import type { CreateMissionRequest } from '@/entities/mission/model/types'
 
 interface MissionEditPageProps {
   missionId: string
@@ -16,13 +18,20 @@ interface MissionEditPageProps {
 export function MissionEditPage({ missionId }: MissionEditPageProps) {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { data: mission, isLoading } = useMission(missionId)
+  const user = useAuthStore((s) => s.user)
+  const storeId = user?.storeId ?? ''
+  const { data: mission, isLoading } = useMission(storeId, missionId)
 
   const mutation = useMutation({
-    mutationFn: (input: CreateMissionInput) => updateMission(missionId, input),
+    mutationFn: (input: CreateMissionRequest) =>
+      updateMission(storeId, missionId, {
+        configJson: input.configJson,
+        rewardAmount: input.rewardAmount,
+        active: mission?.active ?? true,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['missions'] })
-      queryClient.invalidateQueries({ queryKey: ['mission', missionId] })
+      queryClient.invalidateQueries({ queryKey: ['mission', storeId, missionId] })
       notifications.show({
         title: '수정 완료',
         message: '미션이 수정되었습니다.',
@@ -64,7 +73,7 @@ export function MissionEditPage({ missionId }: MissionEditPageProps) {
           돌아가기
         </Button>
       </Group>
-      <PageHeader title="미션 수정" description={mission.title} />
+      <PageHeader title="미션 수정" description={MISSION_TYPE_LABELS[mission.type] ?? mission.type} />
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <MissionForm
           initialValues={mission}

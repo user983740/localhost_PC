@@ -1,38 +1,30 @@
-export type MissionType = 'VISIT' | 'STAY' | 'PURCHASE' | 'REVISIT'
-export type MissionStatus = 'DRAFT' | 'ACTIVE' | 'PAUSED' | 'COMPLETED' | 'CANCELLED'
+export type MissionType = 'TIME_WINDOW' | 'DWELL' | 'RECEIPT' | 'INVENTORY' | 'STAMP'
 
 export interface Mission {
-  id: string
-  storeId: string
-  title: string
-  description: string
+  id: number
+  storeId: number
   type: MissionType
-  status: MissionStatus
+  configJson: string
   rewardAmount: number
-  maxParticipants: number
-  currentParticipants: number
-  startDate: string
-  endDate: string
-  conditions: MissionCondition
-  createdAt: string
-  updatedAt: string
+  lat: number
+  lng: number
+  active: boolean
 }
 
-export interface MissionCondition {
-  minStayMinutes?: number
-  minPurchaseAmount?: number
-  revisitDays?: number
-}
-
-export interface CreateMissionInput {
-  title: string
-  description: string
+export interface CreateMissionRequest {
   type: MissionType
+  configJson: string
   rewardAmount: number
-  maxParticipants: number
-  startDate: string
-  endDate: string
-  conditions: MissionCondition
 }
 
-export type UpdateMissionInput = Partial<CreateMissionInput> & { status?: MissionStatus }
+export interface UpdateMissionRequest {
+  configJson: string
+  rewardAmount: number
+  active: boolean
+}
+
+// configJson 파싱 헬퍼 타입
+export interface ReceiptConfig {
+  targetProductKey: string
+  confidenceThreshold?: number
+}

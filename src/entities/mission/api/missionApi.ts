@@ -1,23 +1,10 @@
-import { delay } from '@/shared/lib/delay'
-import { mockMissions } from '@/mocks/missions'
+import { fetchClient } from '@/shared/lib/fetchClient'
 import type { Mission } from '../model/types'
 
-let missions = [...mockMissions]
-
-export function getMissionsData() {
-  return missions
-}
-
-export function setMissionsData(data: Mission[]) {
-  missions = data
-}
-
 export async function getMissions(storeId: string): Promise<Mission[]> {
-  await delay()
-  return missions.filter((m) => m.storeId === storeId)
+  return fetchClient<Mission[]>(`/api/stores/${storeId}/missions`, { auth: true })
 }
 
-export async function getMission(missionId: string): Promise<Mission | undefined> {
-  await delay()
-  return missions.find((m) => m.id === missionId)
+export async function getMission(storeId: string, missionId: string): Promise<Mission> {
+  return fetchClient<Mission>(`/api/stores/${storeId}/missions/${missionId}`, { auth: true })
 }

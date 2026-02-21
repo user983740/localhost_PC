@@ -9,10 +9,10 @@ export function useMissions(storeId: string) {
   })
 }
 
-export function useMission(missionId: string) {
+export function useMission(storeId: string, missionId: string) {
   return useQuery({
-    queryKey: ['mission', missionId],
-    queryFn: () => getMission(missionId),
-    enabled: !!missionId,
+    queryKey: ['mission', storeId, missionId],
+    queryFn: () => getMission(storeId, missionId),
+    enabled: !!storeId && !!missionId,
   })
 }
