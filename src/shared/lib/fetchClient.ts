@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/features/auth/model/authStore'
 
-export const API_BASE_URL = 'http://3.107.199.19:8080'
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
 export class ApiRequestError extends Error {
   status: number
