@@ -6,6 +6,7 @@ import { loginApi } from '../api/realAuthApi'
 import { useAuthStore } from '../model/authStore'
 import { useRouter } from '@tanstack/react-router'
 import { ApiRequestError } from '@/shared/lib/fetchClient'
+import { getMyStores } from '@/entities/store/api/storeApi'
 import type { User } from '@/entities/user/model/types'
 
 export function LoginForm() {
@@ -36,7 +37,24 @@ export function LoginForm() {
         role: result.role as User['role'],
       }
       setAuth(user, result.token)
-      router.navigate({ to: '/dashboard' })
+
+      // OWNER인 경우 매장 정보를 가져와서 storeId 설정
+      if (result.role === 'OWNER') {
+        try {
+          const stores = await getMyStores()
+          if (stores.length > 0) {
+            useAuthStore.getState().setStoreId(String(stores[0].id))
+            router.navigate({ to: '/dashboard' })
+          } else {
+            router.navigate({ to: '/store-setup' })
+          }
+        } catch {
+          // 매장 조회 실패 시에도 대시보드로 이동
+          router.navigate({ to: '/dashboard' })
+        }
+      } else {
+        router.navigate({ to: '/dashboard' })
+      }
     } catch (err) {
       if (err instanceof ApiRequestError) {
         setError(err.message)
