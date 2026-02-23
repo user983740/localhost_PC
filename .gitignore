@@ -29,6 +29,7 @@ dist-ssr
 
 # Claude
 CLAUDE.md
+.claude/
 
 # Store accounts (sensitive)
 .store-accounts.md
