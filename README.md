@@ -36,8 +36,8 @@
 ### 1) 로그인 및 회원가입
 
 <p align="center">
-  [로그인 페이지 스크린샷]
-  [회원가입 페이지 스크린샷]
+  <img src="./demo/screenshots/login.png" alt="로그인 페이지" style="display: inline-block; width: 49%; max-width: 560px; height: auto; vertical-align: top;" />
+  <img src="./demo/screenshots/register.png" alt="회원가입 페이지" style="display: inline-block; width: 49%; max-width: 560px; height: auto; vertical-align: top;" />
 </p>
 
 - OWNER 역할 계정으로 로그인하여 관리자 기능에 접근합니다.
@@ -51,7 +51,7 @@
 ### 2) 대시보드
 
 <p align="center">
-  [대시보드 페이지 스크린샷]
+  <img src="./demo/screenshots/dashboard.png" alt="대시보드 페이지" style="display: block; width: 100%; max-width: 800px; height: auto; margin: 0 auto;" />
 </p>
 
 - 활성 미션 수, 전체 미션 수, 총 보상 예산을 통계 카드로 한눈에 확인합니다.
@@ -64,8 +64,8 @@
 ### 3) 미션 목록 및 상세
 
 <p align="center">
-  [미션 목록 페이지 스크린샷]
-  [미션 상세 페이지 스크린샷]
+  <img src="./demo/screenshots/mission-list.png" alt="미션 목록 페이지" style="display: inline-block; width: 49%; max-width: 560px; height: auto; vertical-align: top;" />
+  <img src="./demo/screenshots/mission-detail.png" alt="미션 상세 페이지" style="display: inline-block; width: 49%; max-width: 560px; height: auto; vertical-align: top;" />
 </p>
 
 - 매장에 등록된 모든 미션을 카드 그리드로 조회합니다.
@@ -80,7 +80,7 @@
 ### 4) 미션 생성 및 수정
 
 <p align="center">
-  [미션 생성 폼 스크린샷]
+  <img src="./demo/screenshots/mission-create.png" alt="미션 생성 폼" style="display: block; width: 100%; max-width: 800px; height: auto; margin: 0 auto;" />
 </p>
 
 - 5가지 미션 타입 중 하나를 선택하면 해당 타입에 맞는 설정 필드가 동적으로 표시됩니다.
@@ -102,7 +102,7 @@
 ### 5) 매장 정보 관리
 
 <p align="center">
-  [매장 정보 페이지 스크린샷]
+  <img src="./demo/screenshots/store.png" alt="매장 정보 페이지" style="display: block; width: 100%; max-width: 800px; height: auto; margin: 0 auto;" />
 </p>
 
 - 매장명, 주소, 상세 주소, 사업자 번호 등 매장 정보를 확인합니다.
